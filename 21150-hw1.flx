@@ -1,0 +1,120 @@
+%{
+ #include <string.h>
+%}
+
+%{
+int line = 1;
+int crsr = 1;
+int forint;
+float forreal;
+%}
+
+%x comment
+
+%%
+"//" BEGIN(comment);
+<comment>"\n" { BEGIN(INITIAL);
+line++; 
+crsr=1; }
+
+"\n"	{
+	line++;
+	crsr=1;}
+
+" "	|
+"\t"	{
+	crsr = crsr + 7; }
+
+<comment>{
+" "	|
+"\t" {
+	crsr++;
+}
+
+.*	crsr += yyleng;	
+
+}
+
+NaN {  printf("%d %d tNAN\n", line, crsr);
+        crsr += yyleng;}
+function {  printf("%d %d tFUNCTION\n", line, crsr);
+        crsr += yyleng;}
+undefined {  printf("%d %d tUNDEFINED\n", line, crsr);
+        crsr += yyleng;}
+Infinity {  printf("%d %d tINFINITY\n", line, crsr);
+        crsr += yyleng;}
+null {  printf("%d %d tNULL\n", line, crsr);
+        crsr += yyleng;}
+if {  printf("%d %d tIF\n", line, crsr);
+        crsr += yyleng;}
+else {  printf("%d %d tELSE\n", line, crsr);
+        crsr += yyleng;}
+true {  printf("%d %d tTRUE\n", line, crsr);
+        crsr += yyleng;}
+false {  printf("%d %d tFALSE\n", line, crsr);
+        crsr += yyleng;}
+return {  printf("%d %d tRETURN\n", line, crsr);
+        crsr += yyleng;}
+for {  printf("%d %d tFOR\n", line, crsr);
+        crsr += yyleng;}
+while {  printf("%d %d tWHILE\n", line, crsr);
+        crsr += yyleng;}
+in {  printf("%d %d tIN\n", line, crsr);
+        crsr += yyleng;}
+var {  printf("%d %d tVAR\n", line, crsr);
+        crsr += yyleng;}
+
+[A-Za-z_][A-Za-z0-9_]* { printf("%d %d tIDENT (%s)\n",line,crsr,yytext);
+crsr += yyleng; }
+
+-?[0-9][0-9]* {
+forint = atoi(yytext);
+ printf("%d %d tINT (%d)\n",line,crsr,forint);
+crsr += yyleng; }
+
+-[0-9]*"."[0-9]+ |
+[0-9]*"."[0-9]+ { 
+forreal = atof (yytext);
+printf("%d %d tREAL (%f)\n",line,crsr,yytext,forreal);
+crsr += yyleng; }
+
+\".*\" |
+\'[^']*\' {
+yytext[strlen(yytext)-1]=0;
+ printf("%d %d tSTRING (%s)\n",line,crsr,yytext+1);
+crsr += yyleng; }
+
+"-" {  printf("%d %d tMINUS\n", line, crsr);
+        crsr += yyleng;}
+"," {  printf("%d %d tCOMMA\n", line, crsr);
+        crsr += yyleng;}
+"(" {  printf("%d %d tLPAR\n", line, crsr);
+        crsr += yyleng;}
+"[" { printf("%d %d tLBRKT\n", line, crsr);
+        crsr += yyleng;}
+"<" { printf("%d %d LT\n", line, crsr);
+        crsr += yyleng;}
+"*" { printf("%d %d tSTAR\n", line, crsr);
+        crsr += yyleng;}
+";" { printf("%d %d tSEMICOLON\n", line, crsr);
+        crsr += yyleng;}
+")" { printf("%d %d tRPAR\n", line, crsr);
+        crsr += yyleng;}
+"]" { printf("%d %d tRBBRKT\n", line, crsr);
+        crsr += yyleng;}
+">" { printf("%d %d tGT\n", line, crsr);
+        crsr += yyleng;}
+"=" { printf("%d %d tEQ\n", line, crsr);
+        crsr += yyleng;}
+":" { printf("%d %d tCOLON\n", line, crsr);
+        crsr += yyleng;}
+"%" { printf("%d %d tPERCENT\n", line, crsr);
+        crsr += yyleng;}
+"+" { printf("%d %d tPLUS\n", line, crsr);
+        crsr += yyleng;}
+"!" { printf("%d %d tNOT\n", line, crsr);
+        crsr += yyleng;}
+
+%%
+main() {
+ yylex(); }

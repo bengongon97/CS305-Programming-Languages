@@ -1,0 +1,43 @@
+%{
+#include "21150-hw2.tab.h"
+%}
+
+%%
+
+for return FOR;
+while return WHILE;
+in return IN; 
+var return VAR;
+if return IF;
+else return ELSE;
+function return FUNCTION;
+ 
+";" return SEMICOLON; 
+"," return COMMA; 
+"(" return LPAR; 
+")" return RPAR; 
+"[" return LBRKT; 
+"]" return RBRKT;
+"{" return LBRACE; 
+"}" return RBRACE; 
+"<" return LT; 
+">" return GT; 
+"*" return STAR; 
+"=" return EQ; 
+"+" return PLUS; 
+"-" return MINUS; 
+":" return COLON; 
+"!" return NOT; 
+"==" return EQCHECK;
+
+
+"-"?[0-9]+ return INT;
+[0-9]*"."[0-9]+ return REAL;
+[a-zA-Z_][a-zA-Z_0-9]* return IDENT;
+"-"[0-9]+"."[0-9]+ return REAL;
+["][^"]*["] return STRING;
+'[^']*' return STRING;
+
+%%
+
+yylex();
